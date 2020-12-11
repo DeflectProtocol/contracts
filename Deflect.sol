@@ -1096,8 +1096,8 @@ contract DeflectProtocol is Context, IERC20, Ownable {
     }
 
     function addLiquidityToUniswapPair() public {
-        //require(now >= lgeEndTime, "Liquidity generation ongoing");
-        //require(LPGenerationCompleted == false, "Liquidity generation already finished");
+        require(now >= lgeEndTime, "Liquidity generation ongoing");
+        require(LPGenerationCompleted == false, "Liquidity generation already finished");
         if(_msgSender() != owner()) {
             require(now > (lgeEndTime + 2 hours), "Please wait for dev grace period");
         }
@@ -1137,8 +1137,8 @@ contract DeflectProtocol is Context, IERC20, Ownable {
     }
 
     function claimLPTokens() public {
-        //require(now >= lpUnlockTime, "LP not unlocked yet");
-        //require(LPGenerationCompleted, "Event not over yet");
+        require(now >= lpUnlockTime, "LP not unlocked yet");
+        require(LPGenerationCompleted, "Event not over yet");
         require(ethContributedForLPTokens[msg.sender] > 0 , "Nothing to claim, move along");
         IUniswapV2Pair pair = IUniswapV2Pair(tokenUniswapPair);
         uint256 amountLPToTransfer = ethContributedForLPTokens[msg.sender].mul(LPperETHUnit).div(1e18);
@@ -1148,8 +1148,8 @@ contract DeflectProtocol is Context, IERC20, Ownable {
     }
 
     function claimTokens() public {
-        //require(now >= lpUnlockTime, "LP not unlocked yet");
-        //require(LPGenerationCompleted, "Event not over yet");
+        require(now >= lpUnlockTime, "LP not unlocked yet");
+        require(LPGenerationCompleted, "Event not over yet");
         require(ethContributedForTokens[msg.sender] > 0 , "Nothing to claim, move along");
         uint256 amountTokenToTransfer = ethContributedForTokens[msg.sender].mul(TokenPerETHUnit).div(1e18);
         this.transfer(msg.sender, amountTokenToTransfer); // stored as 1e18x value for change
